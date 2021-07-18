@@ -9,14 +9,14 @@ const opts = cmd([
   { name: "client-seed", type: String },
   { name: "issuer-seed", type: String },
   { name: "distribution-seed", type: String },
-  { name: "asset", type: String, defaultValue: "LMC" },
+  { name: "asset", type: String, defaultValue: "ZIA" },
   { name: "issue-amount", type: Number, defaultValue: 10000 },
   { name: "client-amount", type: Number, defaultValue: 0 }
 ]);
 
-const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
+const server = new StellarSdk.Server("https://horizon.stellar.org");
 
-const ASSET = opts["asset"] || "LMC";
+const ASSET = opts["asset"] || "ZIA";
 const ISSUE_AMOUNT = opts["issue-amount"];
 const AMOUNT_TO_CLIENT = opts["client-amount"];
 
@@ -33,7 +33,7 @@ console.log(
    ${getPubKey(opts["distribution-seed"]) || "a random distributer"}
    with ${AMOUNT_TO_CLIENT} given to
    ${getPubKey(opts["client-seed"]) || "a new client account"}
-   on Testnet
+   on mainnet
    `
   )
 );
@@ -101,7 +101,7 @@ async function generate() {
     const clientAccount = await server.loadAccount(clientKey.publicKey());
     const sendToClientTx = new StellarSdk.TransactionBuilder(clientAccount, {
       fee,
-      networkPassphrase: StellarSdk.Networks.TESTNET
+      networkPassphrase: StellarSdk.Networks.mainnet
     })
       .addOperation(
         StellarSdk.Operation.changeTrust({
@@ -126,7 +126,7 @@ async function generate() {
   Object.keys(accounts).forEach(name => {
     console.log(
       chalk.green(
-        `> ${name}: https://stellar.expert/explorer/testnet/account/${accounts[
+        `> ${name}: https://stellar.expert/explorer/public/account/${accounts[
           name
         ].publicKey()}`
       )
